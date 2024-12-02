@@ -1,0 +1,50 @@
+{
+  "name": "api-rest-storage",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev ./src/index.ts",
+    "build": "tsc",
+    "start": "node ./dist/index.js"
+  },
+  "keywords": [
+    "express",
+    "typescript",
+    "sqlite"
+  ],
+  "author": "Brayan Yin Lin",
+  "license": "ISC",
+  "description": "API Rest for manage storage",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@typescript-eslint/parser": "^8.16.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.12.0",
+    "prettier": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.16.0",
+    "vitest": "^2.1.6"
+  },
+  "dependencies": {
+    "@libsql/client": "0.9.0",
+    "bcrypt": "5.1.1",
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "dotenv": "16.4.5",
+    "exceljs": "4.4.0",
+    "express": "4.21.1",
+    "jsonwebtoken": "9.0.2",
+    "morgan": "1.10.0",
+    "zod": "3.23.8"
+  }
+}
