@@ -24,11 +24,8 @@ const bodyParse: TokenCallbackFn = (req: IncomingMessage) => {
 morgan.token('body', bodyParse)
 morgan.token('origin', (req) => req.headers['origin'] || 'sin-origin')
 
-app.use(
-  morgan(
-    ':method - :url - :status - :response-time ms - origin: :origin - body: :body'
-  )
-)
+const format = ':method - :url - :status - origin: :origin - body: :body'
+app.use(morgan(format))
 // app.use((_, res, next) => {
 //   res.setHeader('Cache-Control', 'no-store')
 //   next()
@@ -39,24 +36,6 @@ app.use(handleOrigins())
 app.options('*', handleOrigins())
 app.use(cookieParser())
 app.use(handleSession)
-
-// app.options(
-//   '*',
-//   cors({
-//     origin: function (origin, callback) {
-//       const productionWebsite = process.env.PRODWEB ?? 'null'
-//       const allowedOrigins = ['https://localhost:5173', productionWebsite]
-
-//       if (allowedOrigins.indexOf(origin ?? '') !== -1 || !origin) {
-//         callback(null, true)
-//       } else {
-//         callback(new Error(`Not allowed by CORS ${origin}`))
-//       }
-//     },
-//     credentials: true,
-//     allowedHeaders: ['Content-Type', 'Authorization']
-//   })
-// )
 
 //  Routes
 app.use('/api/user', RouterUser)

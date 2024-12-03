@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { UserSchema } from './models/user.model'
+import { ProductSchema } from './models/product.model'
 import RoleSchema from './models/role.model'
 import UnitSchema from './models/unit.model'
 import { Request, Response } from 'express'
@@ -7,6 +8,7 @@ import { Request, Response } from 'express'
 export type User = z.infer<typeof UserSchema>
 export type Role = z.infer<typeof RoleSchema>
 export type Unit = z.infer<typeof UnitSchema>
+export type Product = z.infer<typeof ProductSchema>
 
 export type RegisteredUser = Required<Pick<User, 'email' | 'name' | 'password'>>
 export type LoggedUser = Required<Pick<User, 'email' | 'password'>>
@@ -20,6 +22,29 @@ export interface UserDAO {
   signUp(user: RegisteredUser): Promise<UserInfo>
   signIn(user: LoggedUser): Promise<UserInfo>
   refreshAccess({ id }: { id: Pick<User, 'id'> }): Promise<UserInfo>
+}
+
+export interface ProductDAO {
+  findProductsByName({ name }: Pick<Product, 'name'>): Promise<Product[]>
+  findAllProducts(): Promise<Product[]>
+  createProduct({
+    name,
+    stock,
+    unitId
+  }: Omit<Product, 'id' | 'unitName'>): Promise<Omit<Product, 'unitName'>>
+  updateProduct({
+    id,
+    name,
+    stock,
+    unitId
+  }: Omit<Product, 'unitName'>): Promise<Omit<Product, 'unitName'>>
+}
+
+export interface ControllerProduct {
+  findProductsByName(req: Request, res: Response): Promise<void | Response>
+  findAllProducts(req: Request, res: Response): Promise<void | Response>
+  createProduct(req: Request, res: Response): Promise<void | Response>
+  updateProduct(req: Request, res: Reponse): Promise<void | Response>
 }
 
 export interface ControllerUser {

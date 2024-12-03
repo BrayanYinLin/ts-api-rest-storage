@@ -5,7 +5,15 @@ const UserSchema = z.object({
   id: z.number().positive().int(),
   name: z.string(),
   email: z.string().email(),
-  password: z.string().optional(),
+  password: z
+    .string({
+      invalid_type_error: 'Password must be a string',
+      required_error: 'Password is required'
+    })
+    .min(8, 'Password must be at least 8 characters long') // Longitud mínima
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter') // Al menos una mayúscula
+    .regex(/\d/, 'Password must contain at least one number')
+    .optional(),
   role: RoleSchema,
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime().optional()
