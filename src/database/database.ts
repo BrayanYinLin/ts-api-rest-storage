@@ -9,7 +9,7 @@ const turso = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN
 })
 
-export default class Storage implements UserDAO {
+export class Storage implements UserDAO {
   async signUp({ name, email, password }: RegisteredUser): Promise<UserInfo> {
     const salts = Number(process.env.SALTS_ROUNDS)
     const hashedPassword = await hash(password, salts)

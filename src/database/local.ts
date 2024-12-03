@@ -1,1 +1,5 @@
-export default 'pepe'
+const Storage = () => {
+  console.log('This gotta work')
+}
+
+export { Storage }

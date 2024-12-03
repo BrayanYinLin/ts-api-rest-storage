@@ -12,6 +12,7 @@ export type RegisteredUser = Required<Pick<User, 'email' | 'name' | 'password'>>
 export type LoggedUser = Required<Pick<User, 'email' | 'password'>>
 
 export type UserInfo = Pick<User, 'id' | 'name' | 'email'>
+export type ErrorInfo = { msg: string | object }
 
 export type Database = typeof Storage
 
@@ -22,8 +23,9 @@ export interface UserDAO {
 }
 
 export interface ControllerUser {
-  signUp(req: Request, res: Response): Promise<void>
-  signIn(req: Request, res: Response): Promise<void>
+  signUp(req: Request, res: Response): Promise<void | Response>
+  signIn(req: Request, res: Response): Promise<void | Response>
+  refreshAccess(req: Request, res: Response): Promise<void | Response>
 }
 
 export interface UnitDAO {
