@@ -51,6 +51,8 @@ export interface ControllerUser {
   signUp(req: Request, res: Response): Promise<void | Response>
   signIn(req: Request, res: Response): Promise<void | Response>
   refreshAccess(req: Request, res: Response): Promise<void | Response>
+  logOut(req: Request, res: Response): Promise<void | Response>
+  verifyAccess(req: Request, res: Response): Promise<void | Response>
 }
 
 export interface UnitDAO {

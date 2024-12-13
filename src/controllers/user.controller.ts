@@ -2,8 +2,9 @@ import { Request, Response } from 'express'
 import { ControllerUser } from '../types'
 import { Storage } from '../database/database'
 import { checkSignIn, checkSignUp } from '../models/user.model'
-import { sign } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 import 'dotenv/config'
+import { MissingToken } from '../lib/error-factory'
 
 export default class UserController implements ControllerUser {
   TIME_TO_ACCESS: number = 1000 * 60 * 60 * 4 //  4 horas
@@ -102,5 +103,27 @@ export default class UserController implements ControllerUser {
 
   async refreshAccess(_: Request, res: Response): Promise<void | Response> {
     res.json({ msg: 'test' })
+  }
+
+  async logOut(_: Request, res: Response): Promise<void | Response> {
+    res
+      .clearCookie('access_token')
+      .clearCookie('refresh_token')
+      .json({ msg: 'Logout successfull' })
+  }
+
+  async verifyAccess(req: Request, res: Response): Promise<void | Response> {
+    try {
+      const SECRET_FOR_ACCESS = process.env.SECRET
+      if (!SECRET_FOR_ACCESS) throw new MissingToken('No token sent')
+
+      const token = verify(req.cookies.access_token, SECRET_FOR_ACCESS)
+
+      if (token) {
+        res.status(200).json({ msg: 'Everything is ok' })
+      }
+    } catch (e) {
+      res.status(403).json(e)
+    }
   }
 }
