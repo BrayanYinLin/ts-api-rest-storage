@@ -4,7 +4,10 @@ import UserController from '../controllers/user.controller'
 const ControllerUser = new UserController()
 const RouterUser = Router()
 
-RouterUser.get('/login', ControllerUser.signIn)
-RouterUser.get('/register', ControllerUser.signUp)
+RouterUser.post('/login', ControllerUser.signIn)
+RouterUser.post('/register', ControllerUser.signUp)
+RouterUser.post('/refresh', ControllerUser.refreshAccess)
+RouterUser.post('/logout', ControllerUser.logOut)
+RouterUser.get('/check', ControllerUser.verifyAccess)
 
 export default RouterUser
