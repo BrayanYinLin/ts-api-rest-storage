@@ -155,7 +155,7 @@ export class Storage implements UserDAO, ProductDAO {
     name,
     stock,
     unitId
-  }: Omit<Product, 'unitName'>): Promise<Omit<Product, 'unitName'>> {
+  }: Required<Omit<Product, 'unitName'>>): Promise<Omit<Product, 'unitName'>> {
     const { rowsAffected } = await turso.execute({
       sql: 'UPDATE product SET product_name = COALESCE(:product_name, product_name), product_stock = COALESCE(:product_stock, product_stock), volume_id = COALESCE(:volume_id, volume_id) WHERE product_id = :product_id',
       args: {
