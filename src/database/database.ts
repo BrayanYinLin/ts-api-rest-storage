@@ -3,6 +3,8 @@ import {
   Product,
   ProductDAO,
   RegisteredUser,
+  Unit,
+  UnitDAO,
   User,
   UserDAO,
   UserInfo
@@ -22,7 +24,7 @@ const turso = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN
 })
 
-export class Storage implements UserDAO, ProductDAO {
+export class Storage implements UserDAO, ProductDAO, UnitDAO {
   async signUp({ name, email, password }: RegisteredUser): Promise<UserInfo> {
     const salts = Number(process.env.SALTS_ROUNDS)
     const hashedPassword = await hash(password, salts)
@@ -183,5 +185,108 @@ export class Storage implements UserDAO, ProductDAO {
       stock: row.product_stock as number,
       unitId: row.unitId as number
     }
+  }
+
+  async findAllUnits() {
+    const { rows } = await turso.execute({
+      sql: 'SELECT * FROM view_unit',
+      args: []
+    })
+
+    return rows.map(
+      (row): Unit => ({
+        unitId: Number(row.unitId),
+        unitName: String(row.unitName)
+      })
+    )
+  }
+
+  async findUnitById({ id }: { id: Required<Pick<Unit, 'unitId'>> }) {
+    const { rows } = await turso.execute({
+      sql: 'SELECT * FROM view_unit WHERE unitId = ?',
+      args: [Number(id)]
+    })
+
+    if (rows.length === 0) throw new Error('No se hallo la unidad de medida')
+
+    return Number(rows[0].unitId)
+  }
+
+  async findIncomesResumeByMonthAndYear({
+    month,
+    year
+  }: {
+    month: number | string
+    year: number
+  }) {
+    if (Number(month) < 10) {
+      month = `0${month}`
+    }
+    const { rows } = await turso.execute({
+      sql: `SELECT product_name AS [Producto], v.volume_name AS [Unidad de Medida], sum(record_quantity) AS [Cantidad],
+        CASE 
+          WHEN strftime('%m', r.record_date) = '01' THEN 'Enero'
+          WHEN strftime('%m', r.record_date) = '02' THEN 'Febrero'
+          WHEN strftime('%m', r.record_date) = '03' THEN 'Marzo'
+          WHEN strftime('%m', r.record_date) = '04' THEN 'Abril'
+          WHEN strftime('%m', r.record_date) = '05' THEN 'Mayo'
+          WHEN strftime('%m', r.record_date) = '06' THEN 'Junio'
+          WHEN strftime('%m', r.record_date) = '07' THEN 'Julio'
+          WHEN strftime('%m', r.record_date) = '08' THEN 'Agosto'
+          WHEN strftime('%m', r.record_date) = '09' THEN 'Septiembre'
+          WHEN strftime('%m', r.record_date) = '10' THEN 'Octubre'
+          WHEN strftime('%m', r.record_date) = '11' THEN 'Noviembre'
+          WHEN strftime('%m', r.record_date) = '12' THEN 'Diciembre'
+          ELSE 'Mes desconocido'
+        END AS [Mes]
+      FROM record r
+      INNER JOIN product pr ON pr.product_id = r.product_id 
+      INNER JOIN volume v ON pr.volume_id = v.volume_id
+      INNER JOIN record_types rt ON r.record_type_id = rt.record_type_id
+      WHERE rt.record_type_id = 1 AND strftime('%m', r.record_date) = ? AND strftime('%Y', r.record_date) = ?
+      GROUP BY [Producto]`,
+      args: [month, year]
+    })
+
+    return rows
+  }
+
+  async findOutcomesResumeByMonthAndYear({
+    month,
+    year
+  }: {
+    month: number | string
+    year: number
+  }) {
+    if (Number(month) < 10) {
+      month = `0${month}`
+    }
+    const { rows } = await turso.execute({
+      sql: `SELECT product_name AS [Producto], v.volume_name AS [Unidad de Medida], sum(record_quantity) AS [Cantidad],
+        CASE 
+          WHEN strftime('%m', r.record_date) = '01' THEN 'Enero'
+          WHEN strftime('%m', r.record_date) = '02' THEN 'Febrero'
+          WHEN strftime('%m', r.record_date) = '03' THEN 'Marzo'
+          WHEN strftime('%m', r.record_date) = '04' THEN 'Abril'
+          WHEN strftime('%m', r.record_date) = '05' THEN 'Mayo'
+          WHEN strftime('%m', r.record_date) = '06' THEN 'Junio'
+          WHEN strftime('%m', r.record_date) = '07' THEN 'Julio'
+          WHEN strftime('%m', r.record_date) = '08' THEN 'Agosto'
+          WHEN strftime('%m', r.record_date) = '09' THEN 'Septiembre'
+          WHEN strftime('%m', r.record_date) = '10' THEN 'Octubre'
+          WHEN strftime('%m', r.record_date) = '11' THEN 'Noviembre'
+          WHEN strftime('%m', r.record_date) = '12' THEN 'Diciembre'
+          ELSE 'Mes desconocido'
+        END AS [Mes]
+      FROM record r
+      INNER JOIN product pr ON pr.product_id = r.product_id 
+      INNER JOIN volume v ON pr.volume_id = v.volume_id
+      INNER JOIN record_types rt ON r.record_type_id = rt.record_type_id
+      WHERE rt.record_type_id = 2 AND strftime('%m', r.record_date) = ? AND strftime('%Y', r.record_date) = ?
+      GROUP BY [Producto]`,
+      args: [month, year]
+    })
+
+    return rows
   }
 }
