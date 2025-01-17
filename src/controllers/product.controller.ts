@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import { ControllerProduct } from '../types'
+import { IProductCtrl } from '../types'
 import { RepeatedProduct, UnauthorizedAction } from '../lib/error-factory'
 import { checkProduct, checkUpdateProduct } from '../models/product.model'
 import { z } from 'zod'
 
-export default class UserController implements ControllerProduct {
+export default class UserController implements IProductCtrl {
   async findProductsByName(req: Request, res: Response) {
     try {
       const storage = new Storage()

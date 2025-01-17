@@ -40,14 +40,19 @@ export interface ProductDAO {
   }: Omit<Product, 'unitName'>): Promise<Omit<Product, 'unitName'>>
 }
 
-export interface ControllerProduct {
+export interface UnitDAO {
+  findAllUnits(): Promise<Unit[]>
+  findUnitById({ id }: { id: Required<Pick<Unit, 'unitId'>> }): Promise<number>
+}
+
+export interface IProductCtrl {
   findProductsByName(req: Request, res: Response): Promise<void | Response>
   findAllProducts(req: Request, res: Response): Promise<void | Response>
   createProduct(req: Request, res: Response): Promise<void | Response>
   updateProduct(req: Request, res: Reponse): Promise<void | Response>
 }
 
-export interface ControllerUser {
+export interface IUserCtrl {
   signUp(req: Request, res: Response): Promise<void | Response>
   signIn(req: Request, res: Response): Promise<void | Response>
   refreshAccess(req: Request, res: Response): Promise<void | Response>
@@ -55,7 +60,11 @@ export interface ControllerUser {
   verifyAccess(req: Request, res: Response): Promise<void | Response>
 }
 
-export interface UnitDAO {
-  findAllUnits(): Promise<Unit[]>
-  findUnitById({ id }: { id: Pick<Unit, 'id'> }): Promise<Pick<Unit, 'unitId'>>
+export interface IUnitCtrl {
+  findAll(req: Request, res: Response): Promise<void | Response>
+}
+
+export interface IReportCtrl {
+  findExpensesReport(req: Request, res: Response): Promise<Response>
+  findIncomesReport(req: Request, res: Response): Promise<Response>
 }
