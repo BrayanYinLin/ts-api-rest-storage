@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
-import { ControllerUser } from '../types'
+import { IUserCtrl } from '../types'
 import { Storage } from '../database/database'
 import { checkSignIn, checkSignUp } from '../models/user.model'
 import { sign, verify } from 'jsonwebtoken'
 import 'dotenv/config'
 import { MissingToken } from '../lib/error-factory'
 
-export default class UserController implements ControllerUser {
+export default class UserController implements IUserCtrl {
   TIME_TO_ACCESS: number = 1000 * 60 * 60 * 4 //  4 horas
   TIME_TO_REFRESH_ACCESS: number = 1000 * 60 * 60 * 24 * 10 //  10 dias
 
